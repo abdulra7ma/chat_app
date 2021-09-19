@@ -1,0 +1,56 @@
+{% extends 'chat_room.html' %}
+{% load static %}
+
+{% block contacts %}
+{% for friend in friends %}
+
+{% if friend.user.username  != request.user.username %}
+<a href="{% url 'one-chatroom' friend.username %}">
+    <li class="active">
+        <div class="d-flex bd-highlight">
+            <div class="img_cont">
+                <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">
+                <span class="online_icon"></span>
+            </div>
+            <div class="user_info">
+                <span>{{friend.username}}</span>
+                <p>online</p>
+            </div>
+        </div>
+    </li>
+</a>
+{% endif %}
+{% endfor %}
+{% endblock %}
+
+{% block card_body %}
+<div class="card-header msg_head">
+    <div class="d-flex bd-highlight">
+        <div class="img_cont">
+            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">
+            <span class="online_icon"></span>
+        </div>
+        <div class="user_info">
+            <span>Chat with {{me.username}}</span>
+            <!-- <p>1767 Messages</p> -->
+        </div>
+    </div>
+</div>
+<div class="card-body msg_card_body" id="card-body">
+</div>
+<div class="card-footer">
+    <div class="input-group">
+        <input class="form-control" id="input" type="text"></br>
+        <div class="input-group-append">
+            <span class="input-group-text send_btn"><i type="" class="fas fa-location-arrow"></i></span>
+            <input class="btn btn-secondary btn-lg btn-block submit" id="submit" type="button" value="Send">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block static_js %}
+{{ me.username|json_script:"user_username" }}
+{{ reciever|json_script:"reciever" }}
+<script src="{% static 'js/chatroom.js' %}"></script>
+{% endblock %}
