@@ -38,6 +38,26 @@
                     </div>
                     <div class="card-body contacts_body">
                         <ui class="contacts">
+                            {% for friend in friends %}
+                            {% if friend.user.username  != request.user.username %}
+                            <a href="{% url 'one-chatroom' friend.username %}">
+                                <li class="active">
+                                    <div class="d-flex bd-highlight">
+                                        <div class="img_cont">
+                                            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                                class="rounded-circle user_img">
+                                            <span class="online_icon"></span>
+                                        </div>
+                                        <div class="user_info">
+                                            <span>{{friend.username}}</span>
+                                            <p>online</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </a>
+                            {% endif %}
+                            {% endfor %}
+
                             {% block contacts %}
                             {% endblock %}
                         </ui>
@@ -48,10 +68,10 @@
             <div class="col-md-8 col-xl-6 chat">
                 <div class="card">
                     {% if request.get_full_path == '/messanger/' %}
-                        <h3 style="margin: auto;">are you missing someone !!!</h3>
+                    <h3 style="margin: auto;">are you missing someone !!!</h3>
                     {% else %}
-                        {% block card_body %}
-                        {% endblock %}
+                    {% block card_body %}
+                    {% endblock %}
                     {% endif %}
                 </div>
             </div>
@@ -60,4 +80,5 @@
     {% block static_js %}
     {% endblock %}
 </body>
+
 </html>

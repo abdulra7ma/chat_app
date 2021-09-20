@@ -22,11 +22,13 @@ input.addEventListener("keyup", function (event) {
 document.querySelector('#submit').onclick = function (e) {
     const messageInputDom = document.querySelector('#input');
     const message = messageInputDom.value;
-    chatSocket.send(JSON.stringify({
-        'command': 'new_message',
-        'username': user_username,
-        'message': message,
-    }));
+    if (message.length > 0) {
+        chatSocket.send(JSON.stringify({
+            'command': 'new_message',
+            'username': user_username,
+            'message': message,
+        }));
+    };  
     messageInputDom.value = '';
 };
 

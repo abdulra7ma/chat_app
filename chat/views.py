@@ -28,8 +28,6 @@ class ThreadView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         user_check = self.kwargs["username"]
 
-        print(Friends.objects.filter(user=self.request.user))
-
         if not User.objects.filter(username=user_check).exists():
             return render(self.request, "user_not_found.html")
 
@@ -51,7 +49,6 @@ class ThreadView(LoginRequiredMixin, View):
 
     def get_context_data(self, **kwargs):
         context = {}
-        context["friends"] = Friends.objects.filter(user=self.request.user)[0].friends.all()
         context["me"] = self.request.user
         context["reciever"] = self.kwargs["username"]
         return context

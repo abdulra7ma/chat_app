@@ -2,25 +2,6 @@
 {% load static %}
 
 {% block contacts %}
-{% for friend in friends %}
-
-{% if friend.user.username  != request.user.username %}
-<a href="{% url 'one-chatroom' friend.username %}">
-    <li class="active">
-        <div class="d-flex bd-highlight">
-            <div class="img_cont">
-                <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">
-                <span class="online_icon"></span>
-            </div>
-            <div class="user_info">
-                <span>{{friend.username}}</span>
-                <p>online</p>
-            </div>
-        </div>
-    </li>
-</a>
-{% endif %}
-{% endfor %}
 {% endblock %}
 
 {% block card_body %}
