@@ -38,6 +38,7 @@
                     </div>
                     <div class="card-body contacts_body">
                         <ui class="contacts">
+                            {% if friends %}
                             {% for friend in friends %}
                             {% if friend.user.username  != request.user.username %}
                             <a href="{% url 'one-chatroom' friend.username %}" style="text-decoration:none;">
@@ -57,6 +58,7 @@
                             </a>
                             {% endif %}
                             {% endfor %}
+                            {% endif %}
 
                             {% block contacts %}
                             {% endblock %}
