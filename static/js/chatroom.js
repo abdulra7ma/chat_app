@@ -1,5 +1,7 @@
 const user_username = JSON.parse(document.getElementById('user_username').textContent);
 const reciever_username = JSON.parse(document.getElementById('reciever').textContent);
+const sender_avatar_url = JSON.parse(document.getElementById('sender_avatar_url').textContent);
+const reciever_avatar_url = JSON.parse(document.getElementById('reciever_avatar_url').textContent);
 var num = 0
 
 
@@ -34,7 +36,6 @@ document.querySelector('#submit').onclick = function (e) {
 
 chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
-    console.log(data['visit'])
     createMessage(data);
 
 }
@@ -58,11 +59,10 @@ function createMessage(data) {
             var generatedHTML = htmlConstractor(message, 'start')
         } else {
             var generatedHTML = htmlConstractor(message, 'end')
-            // var generatedHTML = '<div class="d-flex justify-content-end mb-4"> <div class="msg_cotainer_send"> '+ data.message + '<span class="msg_time_send">8:55 AM, Today</span></div> <div class="img_cont_msg"> <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg"></div></div>'
         }
         document.getElementById('card-body').innerHTML += generatedHTML
     } else if (data['command'] === 'messages') {
-        console.log(data)
+
         if (data['sender'] === user_username){
             messages = data['messages']
             for (let i = 0; i<messages.length; i++){
@@ -79,6 +79,10 @@ function createMessage(data) {
 }
 
 function htmlConstractor(message, message_class) {
-    var generatedHTML = '<div class="d-flex justify-content-' + message_class + ' mb-4"> <div class="img_cont_msg"> <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg"> </div> <div class="msg_cotainer">' + message + ' </div> </div>';
+    if (message_class === 'start'){
+        var generatedHTML = '<div class="d-flex justify-content-' + message_class + ' mb-4"> <div class="img_cont_msg"> <img src="'+ sender_avatar_url +'" class="rounded-circle user_img_msg"> </div> <div class="msg_cotainer">' + message + ' </div> </div>';
+    } else {
+        var generatedHTML = '<div class="d-flex justify-content-end mb-4"> <div class="msg_cotainer_send"> '+ message + '</div> <div class="img_cont_msg"> <img src="'+ reciever_avatar_url +'" class="rounded-circle user_img_msg"></div></div>'
+    }
     return generatedHTML;
 }

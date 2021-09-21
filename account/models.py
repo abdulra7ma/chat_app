@@ -42,6 +42,7 @@ class Account(PermissionsMixin, AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    avatar = models.ImageField(default='user_images/placeholder.png', upload_to ='user_images/')
 
     objects = CustomAccountManager()
 

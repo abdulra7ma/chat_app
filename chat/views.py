@@ -29,11 +29,6 @@ class ThreadView(LoginRequiredMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         user_check = self.kwargs["username"]
-        print([attrb for attrb in dir(request.user_agent.device) if '__' not in attrb])
-        print([attrb for attrb in dir(request.user_agent) if '__' not in attrb])
-        # print(dir(request.user_agent))
-        print(request.user_agent.get_browser)
-
         if not User.objects.filter(username=user_check).exists():
             return render(self.request, "user_not_found.html")
 
@@ -55,8 +50,7 @@ class ThreadView(LoginRequiredMixin, View):
 
     def get_context_data(self, **kwargs):
         context = {}
-        context["me"] = self.request.user
-        context["reciever"] = self.kwargs["username"]
+        context["reciever"] = User.objects.get(username=self.kwargs.get("username"))
         return context
 
     def get(self, request, **kwargs):
