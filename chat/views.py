@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import render
 from django.views import View
 
-from chat.models import Chat
 from account.models import Friends
+from chat.models import Chat
 
 User = get_user_model()
 
@@ -18,6 +19,7 @@ def room(request, room_name):
     return render(request, "chatroom.html", {"room_name": room_name})
 
 
+@login_required
 def chatroom(request):
     return render(request, "chat_room.html")
 
@@ -27,6 +29,10 @@ class ThreadView(LoginRequiredMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         user_check = self.kwargs["username"]
+        print([attrb for attrb in dir(request.user_agent.device) if '__' not in attrb])
+        print([attrb for attrb in dir(request.user_agent) if '__' not in attrb])
+        # print(dir(request.user_agent))
+        print(request.user_agent.get_browser)
 
         if not User.objects.filter(username=user_check).exists():
             return render(self.request, "user_not_found.html")

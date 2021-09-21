@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block form_body %}
+
+{% if form.errors %}
+<p>Please correct the following errors:</p>
+{% for field in form %}
+{% if field.errors %}
+<div class="alert alert-primary" role="alert">
+  {{ field.label }}: {{ field.errors|striptags }}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<h1>Sign up</h1>
+
+{{ form.username }}
+{{ form.email }}
+{{ form.password }}
+{{ form.password2 }}
+
+<input type="submit" name="signup_submit" value="Sign up" />
+<a href="{% url 'accounts:login' %}" style="text-decoration:none; color: #5e0808;"><p>Already have an account?</p></a>
+{% endblock %}

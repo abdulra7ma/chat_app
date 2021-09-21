@@ -7,4 +7,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.chatroom, name="chatroom"),
     path("m/<str:username>/", views.ThreadView.as_view(), name="one-chatroom"),
+    path("accounts/", include("account.urls")),
 ]

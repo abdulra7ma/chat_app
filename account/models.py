@@ -5,7 +5,6 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
-from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
 
 
@@ -67,9 +66,9 @@ class Friends(models.Model):
 
     def __str__(self) -> str:
         return self.user.username
-    
+
     def add_freind(self, account):
-        # add friend 
+        # add friend
         if not account in self.friends.all():
             self.friends.add(account)
             self.save()
@@ -77,7 +76,7 @@ class Friends(models.Model):
     def delete_freind(self, account):
         if account in self.friends.all():
             self.friends.remove(account)
-    
+
 
 class ConnectionHistory(models.Model):
     ONLINE = "online"

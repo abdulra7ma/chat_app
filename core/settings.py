@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "chat",
     "account",
+    'django_user_agents',
 ]
 
 MIDDLEWARE = [
@@ -34,6 +35,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -49,7 +51,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "chat.context_processors.friends"
+                "chat.context_processors.friends",
             ],
         },
     },
@@ -145,3 +147,7 @@ CHANNEL_LAYERS = {
 # }
 
 AUTH_USER_MODEL = "account.Account"
+
+LOGIN_REDIRECT_URL = "/"
+
+USER_AGENTS_CACHE = 'default'

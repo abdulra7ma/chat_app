@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block form_body %}
+<h1>Login In</h1>
+{{ form.username }}
+{{ form.password }}
+<input type="submit" name="signup_submit" value="Login In" />
+<a href="{% url 'accounts:signup' %}" style="text-decoration:none; color: #5e0808;"><p>Have a new account</p></a>
+{% endblock %}

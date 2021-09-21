@@ -40,7 +40,7 @@
                         <ui class="contacts">
                             {% for friend in friends %}
                             {% if friend.user.username  != request.user.username %}
-                            <a href="{% url 'one-chatroom' friend.username %}">
+                            <a href="{% url 'one-chatroom' friend.username %}" style="text-decoration:none;">
                                 <li class="active">
                                     <div class="d-flex bd-highlight">
                                         <div class="img_cont">

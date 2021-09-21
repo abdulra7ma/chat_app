@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block form_body %}
+<h3>Thank you for using our application</h3>
+<a href="{% url 'accounts:login' %}" class="button-logout">Log In Again</a>
+{% endblock %}
