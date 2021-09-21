@@ -1,6 +1,9 @@
 from django.conf import settings
-from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
-                                        PermissionsMixin)
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
 from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
@@ -75,3 +78,19 @@ class Friends(models.Model):
         if account in self.friends.all():
             self.friends.remove(account)
     
+
+class ConnectionHistory(models.Model):
+    ONLINE = "online"
+    OFFLINE = "offline"
+    STATUS = (
+        (ONLINE, "On-line"),
+        (OFFLINE, "Off-line"),
+    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    device_id = models.CharField(max_length=100)
+    status = models.CharField(max_length=10, choices=STATUS, default=ONLINE)
+    first_login = models.DateTimeField(auto_now_add=True)
+    last_echo = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = (("user", "device_id"),)
