@@ -1,15 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.views.generic.edit import FormView
-
+from django.urls import reverse_lazy
 from .forms import RegistrationForm
 
 
 class SignUp(FormView):
     template_name = "signup.html"
     form_class = RegistrationForm
-    success_url = "/"
+    success_url = reverse_lazy("accounts:login")
 
     def form_valid(self, form):
         user = form.save(commit=False)
