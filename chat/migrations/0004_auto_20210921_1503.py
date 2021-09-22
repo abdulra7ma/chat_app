@@ -6,16 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chat', '0003_auto_20210914_0638'),
+        ("chat", "0003_auto_20210914_0638"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='chat',
-            options={'ordering': ['created_at']},
+            name="chat",
+            options={"ordering": ["created_at"]},
         ),
         migrations.AlterModelOptions(
-            name='message',
-            options={'ordering': ['created_at']},
+            name="message",
+            options={"ordering": ["created_at"]},
         ),
     ]

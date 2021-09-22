@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "chat",
     "account",
-    'django_user_agents',
+    "django_user_agents",
 ]
 
 MIDDLEWARE = [
@@ -36,7 +36,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django_user_agents.middleware.UserAgentMiddleware',
+    "django_user_agents.middleware.UserAgentMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -151,7 +151,7 @@ AUTH_USER_MODEL = "account.Account"
 
 LOGIN_REDIRECT_URL = "/"
 
-USER_AGENTS_CACHE = 'default'
+USER_AGENTS_CACHE = "default"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "media/"

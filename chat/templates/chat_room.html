@@ -30,7 +30,7 @@
                 <div class="card mb-sm-3 mb-md-0 contacts_card">
                     <div class="card-header">
                         <div class="input-group">
-                            <input type="text" placeholder="Search..." name="" class="form-control search">
+                            <input type="text" id="myInput" onkeyup="pull_search_data()" placeholder="Search..." name="" class="form-control search">
                             <div class="input-group-prepend">
                                 <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
                             </div>
@@ -39,25 +39,27 @@
                     <div class="card-body contacts_body">
                         <ui class="contacts">
                             {% if friends %}
-                            {% for friend in friends %}
-                            {% if friend.user.username  != request.user.username %}
-                            <a href="{% url 'one-chatroom' friend.username %}" style="text-decoration:none;">
-                                <li class="active">
-                                    <div class="d-flex bd-highlight">
-                                        <div class="img_cont">
-                                            <img src="{{ friend.avatar.url }}"
-                                                class="rounded-circle user_img">
-                                            <span class="online_icon"></span>
-                                        </div>
-                                        <div class="user_info">
-                                            <span>{{friend.username}}</span>
-                                            <p>online</p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </a>
-                            {% endif %}
-                            {% endfor %}
+                                {% for friend in friends %}
+                                    {% if friend.user.username  != request.user.username %}
+                                    <a href="{% url 'one-chatroom' friend.username %}" style="text-decoration:none;">
+                                        <li class="active">
+                                            <div class="d-flex bd-highlight">
+                                                <div class="img_cont">
+                                                    <img src="{{ friend.avatar.url }}"
+                                                        class="rounded-circle user_img">
+                                                    <span class="online_icon"></span>
+                                                </div>
+                                                <div class="user_info">
+                                                    <span>{{friend.username}}</span>
+                                                    <p>online</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                            <!-- <h6 style="margin-bottom: auto; color: rgb(35, 28, 97);">find someone to chat with</h6> -->
                             {% endif %}
 
                             {% block contacts %}
@@ -69,7 +71,7 @@
             </div>
             <div class="col-md-8 col-xl-6 chat">
                 <div class="card">
-                    {% if request.get_full_path == '/messanger/' %}
+                    {% if request.get_full_path == '/' %}
                     <h3 style="margin: auto;">are you missing someone !!!</h3>
                     {% else %}
                     {% block card_body %}
@@ -81,6 +83,6 @@
     </div>
     {% block static_js %}
     {% endblock %}
+    <script src="{% static 'js/search.js' %}"></script>
 </body>
-
 </html>

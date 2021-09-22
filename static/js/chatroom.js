@@ -2,7 +2,8 @@ const user_username = JSON.parse(document.getElementById('user_username').textCo
 const reciever_username = JSON.parse(document.getElementById('reciever').textContent);
 const sender_avatar_url = JSON.parse(document.getElementById('sender_avatar_url').textContent);
 const reciever_avatar_url = JSON.parse(document.getElementById('reciever_avatar_url').textContent);
-var num = 0
+
+var num = 0;
 
 
 const chatSocket = new WebSocket(

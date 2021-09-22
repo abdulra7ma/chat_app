@@ -8,27 +8,50 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('account', '0002_auto_20210914_0758'),
+        ("account", "0002_auto_20210914_0758"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='account',
-            name='avatar',
-            field=models.ImageField(default='user_images/placeholder.png', upload_to='user_images/'),
+            model_name="account",
+            name="avatar",
+            field=models.ImageField(
+                default="user_images/placeholder.png", upload_to="user_images/"
+            ),
         ),
         migrations.CreateModel(
-            name='ConnectionHistory',
+            name="ConnectionHistory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('device_id', models.CharField(max_length=100)),
-                ('status', models.CharField(choices=[('online', 'On-line'), ('offline', 'Off-line')], default='online', max_length=10)),
-                ('first_login', models.DateTimeField(auto_now_add=True)),
-                ('last_echo', models.DateTimeField(auto_now=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("device_id", models.CharField(max_length=100)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("online", "On-line"), ("offline", "Off-line")],
+                        default="online",
+                        max_length=10,
+                    ),
+                ),
+                ("first_login", models.DateTimeField(auto_now_add=True)),
+                ("last_echo", models.DateTimeField(auto_now=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'device_id')},
+                "unique_together": {("user", "device_id")},
             },
         ),
     ]

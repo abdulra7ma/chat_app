@@ -15,10 +15,6 @@ def index(request):
     return render(request, "index.html", {})
 
 
-def room(request, room_name):
-    return render(request, "chatroom.html", {"room_name": room_name})
-
-
 @login_required
 def chatroom(request):
     return render(request, "chat_room.html")

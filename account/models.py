@@ -42,7 +42,9 @@ class Account(PermissionsMixin, AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    avatar = models.ImageField(default='user_images/placeholder.png', upload_to ='user_images/')
+    avatar = models.ImageField(
+        default="user_images/placeholder.png", upload_to="user_images/"
+    )
 
     objects = CustomAccountManager()
 
@@ -55,6 +57,10 @@ class Account(PermissionsMixin, AbstractBaseUser):
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs) -> None:
+        self.is_active = True
+        return super().save(*args, **kwargs)
 
 
 class Friends(models.Model):

@@ -53,10 +53,6 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 
 
 class MessengerConsumer(AsyncWebsocketConsumer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._status = False
-
     @database_sync_to_async
     def get_user_username(self, id):
         user = User.objects.get(id=id)
@@ -67,6 +63,10 @@ class MessengerConsumer(AsyncWebsocketConsumer):
         chat = get_object_or_404(Chat, id=thread_id)
         return Message.objects.filter(Q(thread=chat))
 
+    @database_sync_to_async
+    def _get_user(self, username):
+        return User.objects.get(username=username)
+
     async def new_message(self, *args, **kwargs):
         message = kwargs["data"]["message"]
         user = kwargs["user"]
@@ -75,10 +75,6 @@ class MessengerConsumer(AsyncWebsocketConsumer):
         )
         content = {"command": "new_message", "message": self.message_to_json(message)}
         await self.send_message(content)
-
-    @database_sync_to_async
-    def _get_user(self, username):
-        return User.objects.get(username=username)
 
     async def fetch_messages(self, **data):
         scope_user = data["user"].username
@@ -152,3 +148,56 @@ class MessengerConsumer(AsyncWebsocketConsumer):
         for message in messages:
             result.append(self.message_to_json(message))
         return result
+
+
+class SearchConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_name = f"{self.scope['user'].id}"
+        self.room_group_name = "thread_%s" % self.room_name
+
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        if data["type"] == "search":
+            if data["input"] != "":
+                users = await self.get_10_user(data["input"])
+                user_json = await sync_to_async(self.users_to_json)(users)
+                await self.send_event(user_json)
+    
+    async def send_event(self, data):
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "users_send",
+                'data': data
+            }
+        )
+    
+    async def users_send(self, event):
+        await self.send(text_data=event['data'])
+
+    @database_sync_to_async
+    def get_10_user(self, username):
+        users = User.objects.filter(Q(username__startswith=username))[:5].values_list(
+            "username", "avatar"
+        )
+        return users
+    
+    def user_to_json(self, user):
+        return {
+            "username": user[0],
+            "avatar_url": user[1]
+        }
+
+    def users_to_json(self, users):
+        result = []
+        for user in users:
+            result.append(self.user_to_json(user))
+
+        return json.dumps(result)
