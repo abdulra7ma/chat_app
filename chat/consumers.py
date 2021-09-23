@@ -164,23 +164,20 @@ class SearchConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
+
         if data["type"] == "search":
             if data["input"] != "":
                 users = await self.get_10_user(data["input"])
                 user_json = await sync_to_async(self.users_to_json)(users)
                 await self.send_event(user_json)
-    
+
     async def send_event(self, data):
         await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                "type": "users_send",
-                'data': data
-            }
+            self.room_group_name, {"type": "users_send", "data": data}
         )
-    
+
     async def users_send(self, event):
-        await self.send(text_data=event['data'])
+        await self.send(text_data=event["data"])
 
     @database_sync_to_async
     def get_10_user(self, username):
@@ -188,12 +185,9 @@ class SearchConsumer(AsyncWebsocketConsumer):
             "username", "avatar"
         )
         return users
-    
+
     def user_to_json(self, user):
-        return {
-            "username": user[0],
-            "avatar_url": user[1]
-        }
+        return {"username": user[0], "avatar_url": user[1]}
 
     def users_to_json(self, users):
         result = []

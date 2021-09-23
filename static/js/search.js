@@ -10,7 +10,9 @@ function pull_search_data() {
         "type": "search",
         "input": input.value,
     });
-    console.log(input.value);
+    u1_selector = document.querySelector('.contacts');
+    console.log(u1_selector)
+    // console.log(input.value);
 };
 
 socket.onmessage = function (e) {
@@ -31,13 +33,14 @@ socket.onclose = function (e) {
     console.log("WebSocket is closed now.");
 };
 
-function myFunction() {
-    console.log("inside the myFunction()")
-
-}
-
 function send(data) {
     socket.send(
         JSON.stringify(data)
-    )
-}
+    );
+};
+
+function users_constructor(users_data) {
+    for (let i = 0; i < users_data.length; i++) {
+        console.log(i)
+    };
+};

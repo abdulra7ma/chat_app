@@ -1,9 +1,9 @@
 from django.contrib import admin
-from django.urls import include, path
 from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import include, path
 
-from .views import SignUp
 from .forms import UserLoginForm
+from .views import SignUp
 
 app_name = "accounts"
 

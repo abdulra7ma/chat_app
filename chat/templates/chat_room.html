@@ -1,4 +1,5 @@
 {% load static %}
+{% load chat_tags %}
 <!DOCTYPE html>
 <html>
 
@@ -40,13 +41,12 @@
                         <ui class="contacts">
                             {% if friends %}
                                 {% for friend in friends %}
-                                    {% if friend.user.username  != request.user.username %}
-                                    <a href="{% url 'one-chatroom' friend.username %}" style="text-decoration:none;">
-                                        <li class="active">
+                                    {% if friend.username  != request.user.username %}
+                                    <a href="{% url 'one-chatroom' friend.username %}">
+                                        <li class='{% if friend.username|tostring == request.get_full_path|get_last_element:"/" %} active {% endif %}'>
                                             <div class="d-flex bd-highlight">
                                                 <div class="img_cont">
-                                                    <img src="{{ friend.avatar.url }}"
-                                                        class="rounded-circle user_img">
+                                                    <img src="{{ friend.avatar.url }}" class="rounded-circle user_img">
                                                     <span class="online_icon"></span>
                                                 </div>
                                                 <div class="user_info">
