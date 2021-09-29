@@ -16,6 +16,7 @@
         </div>
     </div>
 </div>
+<!-- card body for messages -->
 <div class="card-body msg_card_body" id="card-body">
 </div>
 <div class="card-footer">
@@ -34,5 +35,8 @@
 {{ reciever.username|json_script:"reciever" }}
 {{ request.user.avatar.url|json_script:"sender_avatar_url" }}
 {{ reciever.avatar.url|json_script:"reciever_avatar_url"}}
+{{ reciever.id|json_script:"reciever_id"}}
+{{ request.user.id|json_script:"sender_id"}}
+
 <script src="{% static 'js/chatroom.js' %}"></script>
 {% endblock %}

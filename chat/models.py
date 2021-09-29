@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -34,7 +35,9 @@ class Chat(TrackingModel):
 
 class Message(TrackingModel):
     thread = models.ForeignKey(Chat, on_delete=models.CASCADE)
-    sender = models.ForeignKey(USER, on_delete=models.SET_NULL, null=True)
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     message_content = models.TextField(max_length=500)  # what length you want
     is_readed = models.BooleanField(_("Readed"), default=False)
 

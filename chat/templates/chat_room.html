@@ -39,10 +39,11 @@
                     </div>
                     <div class="card-body contacts_body">
                         <ui class="contacts">
+                            <div class="friends">
                             {% if friends %}
                                 {% for friend in friends %}
                                     {% if friend.username  != request.user.username %}
-                                    <a href="{% url 'one-chatroom' friend.username %}">
+                                    <a href="{% url 'one-chatroom' friend.username %}" >
                                         <li class='{% if friend.username|tostring == request.get_full_path|get_last_element:"/" %} active {% endif %}'>
                                             <div class="d-flex bd-highlight">
                                                 <div class="img_cont">
@@ -64,6 +65,8 @@
 
                             {% block contacts %}
                             {% endblock %}
+                            </div>
+                            <div class="wrapper_list"></div>
                         </ui>
                     </div>
                     <div class="card-footer"></div>

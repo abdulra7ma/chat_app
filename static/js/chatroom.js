@@ -2,9 +2,8 @@ const user_username = JSON.parse(document.getElementById('user_username').textCo
 const reciever_username = JSON.parse(document.getElementById('reciever').textContent);
 const sender_avatar_url = JSON.parse(document.getElementById('sender_avatar_url').textContent);
 const reciever_avatar_url = JSON.parse(document.getElementById('reciever_avatar_url').textContent);
-
-var num = 0;
-
+const reciever_id = JSON.parse(document.getElementById('reciever_id').textContent);
+const sender_id = JSON.parse(document.getElementById('sender_id').textContent);
 
 const chatSocket = new WebSocket(
     'ws://' +
@@ -14,13 +13,24 @@ const chatSocket = new WebSocket(
     '/'
 );
 
+var messages_contanier = document.getElementById("card-body")
 var input = document.getElementById("input");
+
 input.addEventListener("keyup", function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
         document.getElementById("submit").click();
-    }
+    };
+    scrollDown();
 });
+
+input.addEventListener("click", function (event) {
+    scrollDown();
+});
+
+function scrollDown() {
+    messages_contanier.scrollTop = messages_contanier.scrollHeight;
+};
 
 document.querySelector('#submit').onclick = function (e) {
     const messageInputDom = document.querySelector('#input');
@@ -28,6 +38,8 @@ document.querySelector('#submit').onclick = function (e) {
     if (message.length > 0) {
         chatSocket.send(JSON.stringify({
             'command': 'new_message',
+            "sender_id": sender_id,
+            'reciever_id': reciever_id,
             'username': user_username,
             'message': message,
         }));
@@ -39,19 +51,19 @@ chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
     createMessage(data);
 
-}
+};
 
 chatSocket.onopen = function (e) {
     chatSocket.send(JSON.stringify({
         'command': 'fetch_messages',
         'user_live': true,
         'username': user_username
-    }));
-}
+    })); 
+};
 
 chatSocket.onclose = function (e) {
     console.log("WebSocket is closed now.");
-}
+};
 
 function createMessage(data) {
     if (data['command'] === 'new_message') {
@@ -77,7 +89,7 @@ function createMessage(data) {
         }
         
     }
-}
+};
 
 function htmlConstractor(message, message_class) {
     if (message_class === 'start'){
@@ -86,4 +98,4 @@ function htmlConstractor(message, message_class) {
         var generatedHTML = '<div class="d-flex justify-content-end mb-4"> <div class="msg_cotainer_send"> '+ message + '</div> <div class="img_cont_msg"> <img src="'+ reciever_avatar_url +'" class="rounded-circle user_img_msg"></div></div>'
     }
     return generatedHTML;
-}
+};

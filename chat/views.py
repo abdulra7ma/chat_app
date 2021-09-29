@@ -5,8 +5,7 @@ from django.http import Http404
 from django.shortcuts import render
 from django.views import View
 
-from account.models import Friends
-from chat.models import Chat
+from chat.models import Chat, Message
 
 User = get_user_model()
 

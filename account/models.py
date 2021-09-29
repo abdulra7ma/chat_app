@@ -1,6 +1,9 @@
 from django.conf import settings
-from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
-                                        PermissionsMixin)
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -71,13 +74,12 @@ class Friends(models.Model):
     def __str__(self) -> str:
         return self.user.username
 
-    def add_freind(self, account):
-        # add friend
+    def add_friend(self, account):  # add friend
         if not account in self.friends.all():
             self.friends.add(account)
             self.save()
 
-    def delete_freind(self, account):
+    def delete_friend(self, account):  # remove friend
         if account in self.friends.all():
             self.friends.remove(account)
 

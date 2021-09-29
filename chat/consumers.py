@@ -5,7 +5,10 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.db.models.expressions import F
 from django.shortcuts import get_object_or_404
+
+from account.models import Friends, Account
 
 from .models import Chat, Message
 
@@ -67,12 +70,35 @@ class MessengerConsumer(AsyncWebsocketConsumer):
     def _get_user(self, username):
         return User.objects.get(username=username)
 
+    @database_sync_to_async
+    def check_freind(self, user_id):
+        friend_obj = Friends.objects.filter(user=self.scope["user"]).first()
+        friends_ids = friend_obj.friends.all().values_list("id", flat=True)
+
+        if user_id in list(friends_ids):
+            return True
+
+        return False
+
     async def new_message(self, *args, **kwargs):
         message = kwargs["data"]["message"]
-        user = kwargs["user"]
+        user = await sync_to_async(Account.objects.get)(id=kwargs["data"]["sender_id"])
+        reciever_id = kwargs["data"]["reciever_id"]
+
+        print(isinstance(user, Account))
+
+        if not await self.check_freind(reciever_id):
+            reciever_obj = await sync_to_async(Account.objects.get)(id=reciever_id)
+            user = await sync_to_async(Friends.objects.get)(user=user)
+            await sync_to_async(user.add_friend)(reciever_obj)
+
+
+        print(isinstance(self.scope["user"], Account))
+
         message = await sync_to_async(Message.objects.create)(
-            thread=self.thread_obj, sender=user, message_content=message
+            thread=self.thread_obj, sender=self.scope["user"], message_content=message
         )
+        print("after message obj")
         content = {"command": "new_message", "message": self.message_to_json(message)}
         await self.send_message(content)
 
@@ -98,7 +124,6 @@ class MessengerConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         user_id = self.scope["url_route"]["kwargs"]["username"]
-
         sender = self.scope["user"]
         reciever = await self._get_user(user_id)
 
@@ -114,7 +139,6 @@ class MessengerConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        self._status = False
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
@@ -151,12 +175,14 @@ class MessengerConsumer(AsyncWebsocketConsumer):
 
 
 class SearchConsumer(AsyncWebsocketConsumer):
+    room_group_name: str
+    room_name: str
+
     async def connect(self):
         self.room_name = f"{self.scope['user'].id}"
         self.room_group_name = "thread_%s" % self.room_name
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -164,7 +190,6 @@ class SearchConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-
         if data["type"] == "search":
             if data["input"] != "":
                 users = await self.get_10_user(data["input"])
@@ -182,12 +207,9 @@ class SearchConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_10_user(self, username):
         users = User.objects.filter(Q(username__startswith=username))[:5].values_list(
-            "username", "avatar"
+            "id", "username", "avatar"
         )
         return users
-
-    def user_to_json(self, user):
-        return {"username": user[0], "avatar_url": user[1]}
 
     def users_to_json(self, users):
         result = []
@@ -195,3 +217,8 @@ class SearchConsumer(AsyncWebsocketConsumer):
             result.append(self.user_to_json(user))
 
         return json.dumps(result)
+
+    @staticmethod
+    def user_to_json(user):
+        print(user)
+        return {"id": user[0], "username": user[1], "avatar_url": user[2]}
