@@ -72,7 +72,14 @@ class MessengerConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def check_freind(self, user_id):
-        friend_obj = Friends.objects.filter(user=self.scope["user"]).first()
+        user = self.scope["user"]
+        friend_obj = Friends.objects.filter(user=user)
+
+        if not friend_obj.exists():
+            Friends.objects.create(user=user)
+            return False
+
+        friend_obj.first()
         friends_ids = friend_obj.friends.all().values_list("id", flat=True)
 
         if user_id in list(friends_ids):
@@ -85,20 +92,14 @@ class MessengerConsumer(AsyncWebsocketConsumer):
         user = await sync_to_async(Account.objects.get)(id=kwargs["data"]["sender_id"])
         reciever_id = kwargs["data"]["reciever_id"]
 
-        print(isinstance(user, Account))
-
         if not await self.check_freind(reciever_id):
             reciever_obj = await sync_to_async(Account.objects.get)(id=reciever_id)
             user = await sync_to_async(Friends.objects.get)(user=user)
             await sync_to_async(user.add_friend)(reciever_obj)
 
-
-        print(isinstance(self.scope["user"], Account))
-
         message = await sync_to_async(Message.objects.create)(
             thread=self.thread_obj, sender=self.scope["user"], message_content=message
         )
-        print("after message obj")
         content = {"command": "new_message", "message": self.message_to_json(message)}
         await self.send_message(content)
 
@@ -135,7 +136,6 @@ class MessengerConsumer(AsyncWebsocketConsumer):
         self.room_group_name = "chat_%s" % self.room_name
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-
         await self.accept()
 
     async def disconnect(self, close_code):
