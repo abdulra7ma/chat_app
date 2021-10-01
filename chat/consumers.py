@@ -178,6 +178,18 @@ class SearchConsumer(AsyncWebsocketConsumer):
     room_group_name: str
     room_name: str
 
+    @staticmethod
+    def user_to_json(user):
+        print(user)
+        return {"id": user[0], "username": user[1], "avatar_url": user[2]}
+
+    @database_sync_to_async
+    def get_10_user(self, username):
+        users = User.objects.filter(Q(username__startswith=username))[:5].values_list(
+            "id", "username", "avatar"
+        )
+        return users
+
     async def connect(self):
         self.room_name = f"{self.scope['user'].id}"
         self.room_group_name = "thread_%s" % self.room_name
@@ -204,21 +216,9 @@ class SearchConsumer(AsyncWebsocketConsumer):
     async def users_send(self, event):
         await self.send(text_data=event["data"])
 
-    @database_sync_to_async
-    def get_10_user(self, username):
-        users = User.objects.filter(Q(username__startswith=username))[:5].values_list(
-            "id", "username", "avatar"
-        )
-        return users
-
     def users_to_json(self, users):
         result = []
         for user in users:
             result.append(self.user_to_json(user))
 
         return json.dumps(result)
-
-    @staticmethod
-    def user_to_json(user):
-        print(user)
-        return {"id": user[0], "username": user[1], "avatar_url": user[2]}
