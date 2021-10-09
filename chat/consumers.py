@@ -96,7 +96,6 @@ class MessengerConsumer(AsyncWebsocketConsumer):
             reciever_obj = await sync_to_async(Account.objects.get)(id=reciever_id)
             user = await sync_to_async(Friends.objects.get)(user=user)
             await sync_to_async(user.add_friend)(reciever_obj)
-            
 
         message = await sync_to_async(Message.objects.create)(
             thread=self.thread_obj, sender=self.scope["user"], message_content=message
