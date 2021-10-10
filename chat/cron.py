@@ -1,7 +1,8 @@
-from django.contrib.auth import get_user_model
-from chat.models import Message
 import random
 
+from django.contrib.auth import get_user_model
+
+from chat.models import Message
 
 UserModel = get_user_model()
 

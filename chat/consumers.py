@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.db.models.expressions import F
 from django.shortcuts import get_object_or_404
 
-from account.models import Friends, Account
+from account.models import Account, Friends
 
 from .models import Chat, Message
 

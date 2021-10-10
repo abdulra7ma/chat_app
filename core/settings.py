@@ -23,12 +23,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     # local apps
     "chat",
     "account",
+
     # 3rd party apps
     "django_user_agents",
     "django_crontab",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -125,60 +128,25 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ASGI_APPLICATION = "core.routing_.application"
 
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [os.environ['REDIS_URL']],
-#         },
-#     },
-# }
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     }
 }
 
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "formatters": {
-#         "verbose": {
-#             "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
-#             "style": "{",
-#         },
-#     },
-#     "handlers": {
-#         "django_backends": {
-#             'level': 'DEBUG',
-#             'lass': 'logging.StreamHandler',
-#             'filename': os.path.join(BASE_DIR, 'debug.log'),
-#         },
-#     },
-#     'loggers': {
-#         'django.db.backends': {
-#             'handlers': ['django_backends'],
-#             'formatter': 'verbose',
-#             'level': 'INFO',
-#             'propagate': False,
-#         },
-#     },
-# }
-
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
             # 'filename': os.path.join(BASE_DIR, 'debug.log'),
         },
-        'django_backend_handler': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/error.log'),
-            'level': 'DEBUG',
-            'formatter': 'dd',
+        "django_backend_handler": {
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/error.log"),
+            "level": "DEBUG",
+            "formatter": "dd",
         },
     },
     "formatters": {
@@ -187,28 +155,19 @@ LOGGING = {
             "style": "{",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'WARNING',
-        'formatter': 'verbose',
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+        "formatter": "verbose",
     },
-    'loggers': {
-        'django.db.backends': {
-            'handlers': ['django_backend_handler'],
-            'level': 'DEBUG',
-            'propagate': False,
+    "loggers": {
+        "django.db.backends": {
+            "handlers": ["django_backend_handler"],
+            "level": "DEBUG",
+            "propagate": False,
         },
     },
 }
-
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("127.0.0.1", 6379)],
-#         },
-#     },
-# }
 
 CRONJOBS = [
     ("*/1 * * * *", "chat.cron.create_user"),
