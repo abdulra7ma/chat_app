@@ -1,8 +1,12 @@
-from django.contrib.auth.models import User
+from chat.models import Message as Messages_model
 from rest_framework import serializers
+from api.accounts.serializers import UserPublicSerializers
 
 
-class UserPublicSerializers(serializers.ModelSerializer):
+class MessagesSerializer(serializers.ModelSerializer):
+    sender = UserPublicSerializers(read_only=True)
+
     class Meta:
-        model = User
-        fields = ["id", "username", "email"]
+        model = Messages_model
+        fields = "__all__"
+

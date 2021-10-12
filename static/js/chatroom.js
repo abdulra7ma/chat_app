@@ -1,19 +1,19 @@
 const user_username = JSON.parse(document.getElementById('user_username').textContent);
-const reciever_username = JSON.parse(document.getElementById('reciever').textContent);
+const receiver_username = JSON.parse(document.getElementById('receiver').textContent);
 const sender_avatar_url = JSON.parse(document.getElementById('sender_avatar_url').textContent);
-const reciever_avatar_url = JSON.parse(document.getElementById('reciever_avatar_url').textContent);
-const reciever_id = JSON.parse(document.getElementById('reciever_id').textContent);
+const receiver_avatar_url = JSON.parse(document.getElementById('receiver_avatar_url').textContent);
+const receiver_id = JSON.parse(document.getElementById('receiver_id').textContent);
 const sender_id = JSON.parse(document.getElementById('sender_id').textContent);
 
 const chatSocket = new WebSocket(
     'ws://' +
     window.location.host +
-    '/ws/messanger/' +
-    reciever_username +
+    '/ws/messenger/' +
+    receiver_username +
     '/'
 );
 
-var messages_contanier = document.getElementById("card-body")
+var messages_container = document.getElementById("card-body")
 var input = document.getElementById("input");
 
 input.addEventListener("keyup", function (event) {
@@ -29,7 +29,7 @@ input.addEventListener("click", function (event) {
 });
 
 function scrollDown() {
-    messages_contanier.scrollTop = messages_contanier.scrollHeight;
+    messages_container.scrollTop = messages_container.scrollHeight;
 };
 
 document.querySelector('#submit').onclick = function (e) {
@@ -39,7 +39,7 @@ document.querySelector('#submit').onclick = function (e) {
         chatSocket.send(JSON.stringify({
             'command': 'new_message',
             "sender_id": sender_id,
-            'reciever_id': reciever_id,
+            'receiver_id': receiver_id,
             'username': user_username,
             'message': message,
         }));
@@ -95,7 +95,7 @@ function htmlConstractor(message, message_class) {
     if (message_class === 'start'){
         var generatedHTML = '<div class="d-flex justify-content-' + message_class + ' mb-4"> <div class="img_cont_msg"> <img src="'+ sender_avatar_url +'" class="rounded-circle user_img_msg"> </div> <div class="msg_cotainer">' + message + ' </div> </div>';
     } else {
-        var generatedHTML = '<div class="d-flex justify-content-end mb-4"> <div class="msg_cotainer_send"> '+ message + '</div> <div class="img_cont_msg"> <img src="'+ reciever_avatar_url +'" class="rounded-circle user_img_msg"></div></div>'
+        var generatedHTML = '<div class="d-flex justify-content-end mb-4"> <div class="msg_cotainer_send"> '+ message + '</div> <div class="img_cont_msg"> <img src="'+ receiver_avatar_url +'" class="rounded-circle user_img_msg"></div></div>'
     }
     return generatedHTML;
 };

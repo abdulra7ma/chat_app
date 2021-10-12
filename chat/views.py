@@ -38,14 +38,13 @@ class ThreadView(LoginRequiredMixin, View):
         obj = Chat.objects.get_or_create_personal_thread(
             self.request.user, self.other_user
         )
-        if obj == None:
+        if obj is None:
             raise Http404
 
         return obj
 
     def get_context_data(self, **kwargs):
-        context = {}
-        context["reciever"] = User.objects.get(username=self.kwargs.get("username"))
+        context = {"receiver": User.objects.get(username=self.kwargs.get("username"))}
         return context
 
     def get(self, request, **kwargs):

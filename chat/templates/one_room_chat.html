@@ -8,11 +8,11 @@
 <div class="card-header msg_head">
     <div class="d-flex bd-highlight">
         <div class="img_cont">
-            <img src="{{reciever.avatar.url}}" class="rounded-circle user_img">
+            <img src="{{receiver.avatar.url}}" class="rounded-circle user_img">
             <span class="online_icon"></span>
         </div>
         <div class="user_info">
-            <span>Chat with {{reciever.username}}</span>
+            <span>Chat with {{receiver.username}}</span>
         </div>
     </div>
 </div>
@@ -32,10 +32,10 @@
 
 {% block static_js %}
 {{ request.user.username|json_script:"user_username" }}
-{{ reciever.username|json_script:"reciever" }}
+{{ receiver.username|json_script:"receiver" }}
 {{ request.user.avatar.url|json_script:"sender_avatar_url" }}
-{{ reciever.avatar.url|json_script:"reciever_avatar_url"}}
-{{ reciever.id|json_script:"reciever_id"}}
+{{ receiver.avatar.url|json_script:"receiver_avatar_url"}}
+{{ receiver.id|json_script:"receiver_id"}}
 {{ request.user.id|json_script:"sender_id"}}
 
 <script src="{% static 'js/chatroom.js' %}"></script>

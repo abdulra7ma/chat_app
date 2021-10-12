@@ -5,7 +5,6 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from django.db.models.expressions import F
 from django.shortcuts import get_object_or_404
 
 from account.models import Account, Friends
@@ -56,9 +55,13 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 
 
 class MessengerConsumer(AsyncWebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+        self._status = True
+
     @database_sync_to_async
-    def get_user_username(self, id):
-        user = User.objects.get(id=id)
+    def get_user_username(self, user_id):
+        user = User.objects.get(id=user_id)
         return user.username
 
     @database_sync_to_async
@@ -71,7 +74,7 @@ class MessengerConsumer(AsyncWebsocketConsumer):
         return User.objects.get(username=username)
 
     @database_sync_to_async
-    def check_freind(self, user_id):
+    def check_friend(self, user_id):
         user = self.scope["user"]
         friend_obj = Friends.objects.filter(user=user)
 
@@ -90,12 +93,12 @@ class MessengerConsumer(AsyncWebsocketConsumer):
     async def new_message(self, *args, **kwargs):
         message = kwargs["data"]["message"]
         user = await sync_to_async(Account.objects.get)(id=kwargs["data"]["sender_id"])
-        reciever_id = kwargs["data"]["reciever_id"]
+        receiver_id = kwargs["data"]["receiver_id"]
 
-        if not await self.check_freind(reciever_id):
-            reciever_obj = await sync_to_async(Account.objects.get)(id=reciever_id)
+        if not await self.check_friend(receiver_id):
+            receiver_obj = await sync_to_async(Account.objects.get)(id=receiver_id)
             user = await sync_to_async(Friends.objects.get)(user=user)
-            await sync_to_async(user.add_friend)(reciever_obj)
+            await sync_to_async(user.add_friend)(receiver_obj)
 
         message = await sync_to_async(Message.objects.create)(
             thread=self.thread_obj, sender=self.scope["user"], message_content=message
@@ -126,11 +129,11 @@ class MessengerConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         user_id = self.scope["url_route"]["kwargs"]["username"]
         sender = self.scope["user"]
-        reciever = await self._get_user(user_id)
+        receiver = await self._get_user(user_id)
 
         self.thread_obj = await sync_to_async(
             Chat.objects.get_or_create_personal_thread
-        )(user1=sender, user2=reciever)
+        )(user1=sender, user2=receiver)
 
         self.room_name = f"personal_thread_{self.thread_obj.id}"
         self.room_group_name = "chat_%s" % self.room_name
@@ -141,14 +144,11 @@ class MessengerConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-    async def receive(self, text_data):
+    async def receive(self, text_data, **kwargs):
         data = json.loads(text_data)
         kwargs = {"user": self.scope["user"], "data": data}
 
         await self.commands[data["command"]](self, **kwargs)
-
-        if data["command"] == "fetch_messages":
-            self._status = True
 
     async def send_message(self, data):
         await self.channel_layer.group_send(
@@ -159,7 +159,8 @@ class MessengerConsumer(AsyncWebsocketConsumer):
     async def chatroom_message(self, event):
         await self.send(text_data=json.dumps(event["message"]))
 
-    def message_to_json(self, message):
+    @staticmethod
+    def message_to_json(message):
         return {
             "id": message.id,
             "author": message.sender.username,

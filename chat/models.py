@@ -28,9 +28,10 @@ class Chat(TrackingModel):
     objects = ThreadManager()
 
     def __str__(self) -> str:
-        if self.chat_type == "personal" and self.users.count() == 2:
-            return f"{self.users.first()} and {self.users.last()}"
-        return f"{self.name}"
+        # if self.chat_type == "personal" and self.users.count() == 2:
+        #     return f"{self.users.first()} and {self.users.last()}"
+        # return f"{self.name}"
+        return "hello thread of mine"
 
 
 class Message(TrackingModel):
@@ -39,7 +40,7 @@ class Message(TrackingModel):
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
     message_content = models.TextField(max_length=500)  # what length you want
-    is_readed = models.BooleanField(_("Readed"), default=False)
+    is_read = models.BooleanField(_("Read"), default=False)
 
     def __str__(self):
         return self.message_content
