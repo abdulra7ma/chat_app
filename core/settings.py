@@ -14,7 +14,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 INTERNAL_IPS = [
-    '127.0.0.1',
+    "127.0.0.1",
 ]
 
 
@@ -34,8 +34,9 @@ INSTALLED_APPS = [
     "django_user_agents",
     "django_crontab",
     "rest_framework",
-    'django_filters',
-    'debug_toolbar',
+    "django_filters",
+    "debug_toolbar",
+    "clear_cache",
 ]
 
 MIDDLEWARE = [
@@ -47,7 +48,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_user_agents.middleware.UserAgentMiddleware",
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -192,5 +193,6 @@ MEDIA_URL = "media/"
 
 # DRF
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "EXCEPTION_HANDLER": "api.utils.custom_exception_handler",
 }

@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import MessagesAPIView
 
+from .views import MessagesAPIView
 
 app_name = "chat-api"
 

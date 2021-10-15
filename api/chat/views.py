@@ -1,24 +1,26 @@
-from rest_framework import generics
-from .serializers import MessagesSerializer
-from chat.models import Message
-from rest_framework.response import Response
-from rest_framework import status
-
-from django_filters.rest_framework import DjangoFilterBackend
-from .filters import ThreadUserFilter
-
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django_auto_prefetching import AutoPrefetchViewSetMixin
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
+
+from chat.models import Message
+
+from ..pagination import APICustomPagination
+from .filters import ThreadUserFilter
+from .serializers import MessagesSerializer
 
 
 class MessagesAPIView(AutoPrefetchViewSetMixin, generics.ListAPIView):
     serializer_class = MessagesSerializer
-    filter_backends = (DjangoFilterBackend, )
-    filterset_class = ThreadUserFilter
+    filter_backends = (DjangoFilterBackend,)
     queryset = Message.objects.all()
+    filterset_class = ThreadUserFilter
+    pagination_class = APICustomPagination
 
+    @method_decorator(cache_page(10))
+    @method_decorator(vary_on_cookie)
     def get(self, request, *args, **kwargs):
-        query = self.get_queryset()
-        if not query.exists():
-            content = {'message': "No Content"}
-            return Response(content, status=status.HTTP_404_NOT_FOUND)
         return super().get(request, *args, **kwargs)
