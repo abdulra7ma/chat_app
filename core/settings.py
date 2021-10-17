@@ -14,7 +14,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 INTERNAL_IPS = [
-    '127.0.0.1',
+    "127.0.0.1",
 ]
 
 
@@ -34,8 +34,10 @@ INSTALLED_APPS = [
     "django_user_agents",
     "django_crontab",
     "rest_framework",
-    'django_filters',
-    'debug_toolbar',
+    "django_filters",
+    "debug_toolbar",
+    "clear_cache",
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
@@ -47,7 +49,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_user_agents.middleware.UserAgentMiddleware",
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -141,45 +143,45 @@ CHANNEL_LAYERS = {
     }
 }
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            # 'filename': os.path.join(BASE_DIR, 'debug.log'),
-        },
-        "django_backend_handler": {
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs/error.log"),
-            "level": "DEBUG",
-            "formatter": "dd",
-        },
-    },
-    "formatters": {
-        "dd": {
-            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
-            "style": "{",
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "WARNING",
-        "formatter": "verbose",
-    },
-    "loggers": {
-        "django.db.backends": {
-            "handlers": ["django_backend_handler"],
-            "level": "DEBUG",
-            "propagate": False,
-        },
-    },
-}
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "handlers": {
+#         "console": {
+#             "class": "logging.StreamHandler",
+#             # 'filename': os.path.join(BASE_DIR, 'debug.log'),
+#         },
+#         "django_backend_handler": {
+#             "class": "logging.FileHandler",
+#             "filename": os.path.join(BASE_DIR, "logs/error.log"),
+#             "level": "DEBUG",
+#             "formatter": "dd",
+#         },
+#     },
+#     "formatters": {
+#         "dd": {
+#             "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+#             "style": "{",
+#         },
+#     },
+#     "root": {
+#         "handlers": ["console"],
+#         "level": "WARNING",
+#         "formatter": "verbose",
+#     },
+#     "loggers": {
+#         "django.db.backends": {
+#             "handlers": ["django_backend_handler"],
+#             "level": "DEBUG",
+#             "propagate": False,
+#         },
+#     },
+# }
 
-CRONJOBS = [
-    ("*/1 * * * *", "chat.cron.create_user"),
-    ("*/1 * * * *", "chat.cron.test"),
-]
+# CRONJOBS = [
+#     ("*/1 * * * *", "chat.cron.create_user"),
+#     ("*/1 * * * *", "chat.cron.test"),
+# ]
 
 AUTH_USER_MODEL = "account.Account"
 
@@ -192,5 +194,17 @@ MEDIA_URL = "media/"
 
 # DRF
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "EXCEPTION_HANDLER": "api.utils.custom_exception_handler",
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
+
+
+# Cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
 }
