@@ -4,14 +4,8 @@ from chat.models import Message as MessagesModel
 
 
 class ThreadUserFilter(filters.FilterSet):
-    sender = filters.CharFilter(field_name="sender__username", lookup_expr="icontains")
+    sender = filters.CharFilter(field_name="sender__username", lookup_expr="exact")
 
     class Meta:
         model = MessagesModel
         fields = ("thread", "sender", "is_read")
-
-    # def qs(self):
-    #     filtered_qs = super().qs()
-    #     if filtered_qs.exists():
-    #         print("exists")
-    #     return filtered_qs
