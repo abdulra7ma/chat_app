@@ -5,12 +5,14 @@ const receiver_avatar_url = JSON.parse(document.getElementById('receiver_avatar_
 const receiver_id = JSON.parse(document.getElementById('receiver_id').textContent);
 const sender_id = JSON.parse(document.getElementById('sender_id').textContent);
 
+let ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
+
 const chatSocket = new WebSocket(
-    'ws://' +
-    window.location.host +
-    '/ws/messenger/' +
-    receiver_username +
-    '/'
+    ws_scheme
+    + window.location.host 
+    + '/ws/messenger/' 
+    + receiver_username 
+    + '/'
 );
 
 var messages_container = document.getElementById("card-body")

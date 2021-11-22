@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block card_body %}
-<div class="card-header msg_head">
+<div class="card-header msg_head" id="card-messaging-box">
     <div class="d-flex bd-highlight">
         <div class="img_cont">
             <img src="{{receiver.avatar.url}}" class="rounded-circle user_img">
@@ -13,6 +13,19 @@
         </div>
         <div class="user_info">
             <span>Chat with {{receiver.username}}</span>
+        </div>
+        <div class="video_cam">
+            <span><button id="video-button"><i class="fas fa-video"></i></button></span>
+            <span><button id="voicecall-button"><i class="fas fa-phone"></i></button></i></span>
+        </div>
+        <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+        <div class="action_menu">
+            <ul>
+                <li><i class="fas fa-user-circle"></i> View profile</li>
+                <li><i class="fas fa-users"></i> Add to close friends</li>
+                <li><i class="fas fa-plus"></i> Add to group</li>
+                <li><i class="fas fa-ban"></i> Block</li>
+            </ul>
         </div>
     </div>
 </div>
@@ -23,7 +36,7 @@
     <div class="input-group">
         <input class="form-control" id="input" type="text"></br>
         <div class="input-group-append">
-            <span class="input-group-text send_btn"><i type="" class="fas fa-location-arrow"></i></span>
+            <!-- <i class="fa fa-upload" style="font-size:36px" onclick=""><input type="file" accept="image/*,.pdf"></i> -->
             <input class="btn btn-secondary btn-lg btn-block submit" id="submit" type="button" value="Send">
         </div>
     </div>
@@ -39,4 +52,6 @@
 {{ request.user.id|json_script:"sender_id"}}
 
 <script src="{% static 'js/chatroom.js' %}"></script>
+<script src="{% static 'js/call.js' %}"></script>
+<script src="{% static 'js/menu_toggle.js' %}"></script>
 {% endblock %}

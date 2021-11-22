@@ -24,6 +24,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        await print(f"{self.room_name} disconnected")
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
@@ -57,7 +58,6 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 class MessengerConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
-        self._status = True
 
     @database_sync_to_async
     def get_user_username(self, user_id):
@@ -223,3 +223,20 @@ class SearchConsumer(AsyncWebsocketConsumer):
             result.append(self.user_to_json(user))
 
         return json.dumps(result)
+
+
+class WebRTCSignaling(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_name = f"{self.scope['user'].id}"
+        self.room_group_name = "thread_%s" % self.room_name
+
+        await self.channel_layer.group_add(self.room_group_name,
+                                           self.channel_name)
+        await self.accept()
+
+    async def receive(self, text_data):
+        pass
+
+    async def disconnect(self, code):
+        pass
+

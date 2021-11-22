@@ -16,4 +16,4 @@ class ThreadManager(models.Manager):
             return thread
 
     def by_user(self, user):
-        return self.get_queryset().filter(users__in=[user])
+        return self.get_queryset().filter(users__in=[user]).order_by('-last_login')
